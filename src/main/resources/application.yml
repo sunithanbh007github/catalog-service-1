@@ -10,3 +10,10 @@ server:
 spring:
   application:
     name: catalog-service-1
+  datasource:
+    username: user
+    password: password
+    url: jdbc:postgresql://localhost:5432/polardb_catalog_1
+    hikari:
+      connection-timeout: 2000 #ms
+      maximum-pool-size: 5

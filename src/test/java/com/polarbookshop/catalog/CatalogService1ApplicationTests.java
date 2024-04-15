@@ -4,13 +4,17 @@ import com.polarbookshop.catalog.domain.Book;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("integration")
+@Testcontainers //Activates automatic startup and cleanup of test containers
 class CatalogService1ApplicationTests {
 
 	@Autowired
@@ -18,7 +22,7 @@ class CatalogService1ApplicationTests {
 
 	@Test
 	void whenPostRequestThenBookCreated() {
-		var expectedBook = Book.of("1231231231", "Title", "Author", new BigDecimal("9.90"));
+		var expectedBook = Book.of("1231231231", "Title", "Author", new BigDecimal("9.90"),"vasireddy");
 		webTestClient
 				.post()
 				.uri("/books")
@@ -34,7 +38,7 @@ class CatalogService1ApplicationTests {
 	@Test
 	void whenGetRequestWithIdThenBookReturned() {
 		var bookIsbn = "1231231230";
-		var bookToCreate = Book.of(bookIsbn, "Title", "Author", new BigDecimal("9.90"));
+		var bookToCreate = Book.of(bookIsbn, "Title", "Author", new BigDecimal("9.90"),"vasireddy");
 		Book expectedBook = webTestClient
 				.post()
 				.uri("/books")
@@ -58,7 +62,7 @@ class CatalogService1ApplicationTests {
 	@Test
 	void whenPutRequestThenBookUpdated() {
 		var bookIsbn = "1231231232";
-		var bookToCreate = Book.of(bookIsbn, "Title", "Author", new BigDecimal("9.90"));
+		var bookToCreate = Book.of(bookIsbn, "Title", "Author", new BigDecimal("9.90"),"vasireddy");
 		Book createdBook = webTestClient
 				.post()
 				.uri("/books")
@@ -69,7 +73,12 @@ class CatalogService1ApplicationTests {
 				.returnResult().getResponseBody();
 
 		var bookToUpdate =
-				new Book(createdBook.isbn(), createdBook.title(), createdBook.author(), new BigDecimal(7.95));
+				new Book(createdBook.id(),
+						createdBook.isbn(), createdBook.title(),
+						createdBook.author(), new BigDecimal(7.95),
+						createdBook.publisher(),
+						createdBook.createdDate(),
+						createdBook.lastModifiedDate(), createdBook.version());
 		webTestClient
 				.put()
 				.uri("/books/" + bookIsbn)
@@ -85,7 +94,7 @@ class CatalogService1ApplicationTests {
 	@Test
 	void whenDeleteRequestThenBookDeleted() {
 		var bookIsbn = "1231231233";
-		var bookToCreate = Book.of(bookIsbn, "Title", "Author", new BigDecimal("9.90"));
+		var bookToCreate = Book.of(bookIsbn, "Title", "Author", new BigDecimal("9.90"),"vasireddy");
 
 		webTestClient
 				.post()

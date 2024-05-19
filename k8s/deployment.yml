@@ -31,3 +31,6 @@ spec:
               value: jdbc:postgresql://polar-postgres-1:5432/polardb_catalog_1
             - name: SPRING_PROFILES_ACTIVE
               value: testdata
+            - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
+              value: http://polar-keycloak-1/realms/PolarBookshop-1
+

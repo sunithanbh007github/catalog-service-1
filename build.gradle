@@ -17,6 +17,7 @@ repositories {
 
 ext {
 	set('testcontainersVersion', "1.17.3")
+	set('testKeycloakVersion', "2.3.0")
 }
 
 dependencies {
@@ -24,6 +25,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.flywaydb:flyway-core'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
@@ -32,6 +34,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
 	testImplementation 'org.testcontainers:postgresql'
 	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation "com.github.dasniko:testcontainers-keycloak:${testKeycloakVersion}"
 }
 
 bootRun {
@@ -41,8 +45,8 @@ bootRun {
 bootBuildImage {
 	imageName = "${project.name}"
 	environment = [
-			//'HTTP_PROXY' : 'http.docker.internal:3128',
-			//'HTTPS_PROXY' : 'http.docker.internal:3128',
+			'HTTP_PROXY' : 'http.docker.internal:3128',
+			'HTTPS_PROXY' : 'http.docker.internal:3128',
 			'BP_JVM_VERSION' : '17.*'
 	]
 	docker {

@@ -13,6 +13,10 @@ spec:
     metadata:
       labels:
         app: catalog-service-1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /actuator/prometheus
+        prometheus.io/port: "9001"
     spec:
       containers:
         - name: catalog-service-1
@@ -27,10 +31,25 @@ spec:
           env:
             - name: BPL_JVM_THREAD_COUNT
               value: "50"
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://polar-postgres-1:5432/polardb_catalog_1
             - name: SPRING_PROFILES_ACTIVE
               value: testdata
-            - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
-              value: http://polar-keycloak-1/realms/PolarBookshop-1
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 9001
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 9001
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          volumeMounts:
+            - name: catalog-config-volume-1
+              mountPath: /workspace/config
+      volumes:
+        - name: catalog-config-volume-1
+          configMap:
+            name: catalog-config-1
 

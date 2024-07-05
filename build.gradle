@@ -18,6 +18,7 @@ repositories {
 ext {
 	set('testcontainersVersion', "1.17.3")
 	set('testKeycloakVersion', "2.3.0")
+	set('otelVersion', "1.17.0")
 }
 
 dependencies {
@@ -26,8 +27,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
 	runtimeOnly 'org.postgresql:postgresql'
+	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+	runtimeOnly "io.opentelemetry.javaagent:opentelemetry-javaagent:${otelVersion}"
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -62,6 +66,10 @@ dependencyManagement {
 	imports {
 		mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
 	}
+}
+
+springBoot {
+	buildInfo()
 }
 
 tasks.named('test') {
